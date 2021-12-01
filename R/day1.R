@@ -2,28 +2,15 @@
 #'
 #' @export
 day1 <- function() {
-  # for notes
-  Var1 <- Var2 <- Var3 <- . <- NULL
-  # dependencies
-  `%>%` <- magrittr::`%>%`
-
   # data
-  file <- system.file("extdata/day1.txt", package = "adventofcode2020")
+  file <- system.file("extdata/day1.txt", package = "adventofcode2021")
   input <- scan(file, what = numeric(), sep = "\n", quiet = TRUE)
 
   # part 1
-  part1 <-
-    input %>%
-    expand.grid(.,.) %>%
-    subset(Var1 < Var2 & Var1+Var2 == 2020) %>%
-    prod()
+  part1 <- sum(diff(input) > 0)
 
   # part 2
-  part2 <-
-    input %>%
-    expand.grid(.,.,.) %>%
-    subset(Var1 < Var2 & Var2 < Var3 & Var1+Var2+Var3 == 2020) %>%
-    prod()
+  part2 <- sum(diff(diff(c(0, cumsum(input)), 3)) > 0)
 
   list(part1 = part1, part2 = part2)
 }
