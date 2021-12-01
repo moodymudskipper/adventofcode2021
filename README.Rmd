@@ -1,0 +1,148 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# adventofcode2020
+
+My solutions for adventofcode2020. You can install it with
+
+```{r, eval=FALSE}
+remotes::install_github("moodymudskipper/adventofcode2020")
+```
+
+The package contains functions `day1`, `day2` etc, the readme displays the
+body of these functions.
+
+```{r, echo = FALSE}
+library(adventofcode2020)
+```
+
+
+## day 1
+
+```{r, comment="", echo=FALSE}
+attr(day1, "srcref")
+```
+
+## day 2
+
+```{r, comment="", echo=FALSE}
+attr(day2, "srcref")
+```
+
+## day 3
+
+```{r, comment="", echo=FALSE}
+attr(day3, "srcref")
+```
+
+## day 4
+
+```{r, comment="", echo=FALSE}
+attr(day4, "srcref")
+```
+
+## day 5
+
+```{r, comment="", echo=FALSE}
+attr(day5, "srcref")
+```
+
+## day 6
+
+```{r, comment="", echo=FALSE}
+attr(day6, "srcref")
+```
+
+## day 7
+
+```{r, comment="", echo=FALSE}
+attr(day7, "srcref")
+```
+
+## day 8
+
+```{r, comment="", echo=FALSE}
+attr(day8, "srcref")
+```
+
+## day 9
+
+```{r, comment="", echo=FALSE}
+attr(day9, "srcref")
+```
+
+## day 10
+
+```{r, comment="", echo=FALSE}
+attr(day10, "srcref")
+```
+
+## day 11
+
+part 2 is wrong, works only on example.
+
+```{r, comment="", echo=FALSE}
+attr(day11, "srcref")
+```
+
+## day 12
+
+```{r, comment="", echo=FALSE}
+attr(day12, "srcref")
+```
+
+## day 13
+
+I skipped part 2 here
+
+```{r, comment="", echo=FALSE}
+attr(day13, "srcref")
+```
+
+## day 14
+
+```{r, comment="", echo=FALSE}
+attr(day14, "srcref")
+```
+
+## day 15
+
+```{r, comment="", echo=FALSE}
+attr(day15, "srcref")
+```
+
+## day 16
+
+```{r, comment="", echo=FALSE}
+attr(day16, "srcref")
+```
+
+## day 17
+
+```{r, comment="", echo=FALSE}
+attr(day17, "srcref")
+```
+
+## day 18
+
+```{r, comment="", echo=FALSE}
+attr(day18, "srcref")
+```
+
+## day 19
+
+```{r, comment="", echo=FALSE}
+attr(day19, "srcref")
+```
