@@ -34,3 +34,9 @@ library(adventofcode2021)
 ```{r, comment="", echo=FALSE}
 attr(day1, "srcref")
 ```
+
+## day 2
+
+```{r, comment="", echo=FALSE}
+attr(day2, "srcref")
+```
