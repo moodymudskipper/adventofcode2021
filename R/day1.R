@@ -11,6 +11,8 @@ day1 <- function() {
 
   # part 2
   part2 <- sum(diff(diff(c(0, cumsum(input)), 3)) > 0)
+  # should be :
+  part2 <- sum(diff(input, 3) > 0)
 
   list(part1 = part1, part2 = part2)
 }
