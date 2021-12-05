@@ -15,19 +15,28 @@ day4 <- function() {
     row = 1:n)
 
   # the row/line indice is stored in `row` because "reshape"
-  boards_tidy <- reshape(boards, idvar =c("num", "board"),direction = "long", varying = list(c("row", "col")), times = c("row", "col"), timevar = "dir")
-  boards_tidy$match <- match(boards_tidy$num, draws)
-  boards_tidy$highest_match_by_line  <- ave(boards_tidy$match, boards_tidy$board, boards_tidy$dir, boards_tidy$row, FUN = max)
-  boards_tidy$winning_match_by_board <- ave(boards_tidy$highest_match_by_line, boards_tidy$board, FUN = min)
+  boards_tidy <- reshape(
+    boards, idvar = c("num", "board"), direction = "long",
+    varying = list(c("row", "col")), times = c("row", "col"), timevar = "dir")
+
+  boards_tidy <- within(boards_tidy, {
+    match <- match(num, draws)
+    highest_match_by_line <- ave(match, board, dir, row, FUN = max)
+    winning_match_by_board <- ave(highest_match_by_line, board, FUN = min)
+  })
 
   # part 1
   ending_match <- min(boards_tidy$winning_match_by_board)
-  winning_board <- subset(boards_tidy, board == board[winning_match_by_board == ending_match] & match > ending_match)
+  winning_board <- subset(
+    boards_tidy,
+    board == board[winning_match_by_board == ending_match] & match > ending_match)
   part1 <- sum(winning_board$num) * draws[ending_match] / 2
 
   # part 2, same but min -> max
   ending_match <- max(boards_tidy$winning_match_by_board)
-  winning_board <- subset(boards_tidy, board == board[winning_match_by_board == ending_match] & match > ending_match)
+  winning_board <- subset(
+    boards_tidy,
+    board == board[winning_match_by_board == ending_match] & match > ending_match)
   part2 <- sum(winning_board$num) * draws[ending_match] / 2
 
   list(part1 = part1, part2 = part2)

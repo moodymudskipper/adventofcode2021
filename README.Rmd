@@ -28,7 +28,6 @@ body of these functions.
 library(adventofcode2021)
 ```
 
-
 ## day 1
 
 ```{r, comment="", echo=FALSE}
@@ -51,4 +50,10 @@ attr(day3, "srcref")
 
 ```{r, comment="", echo=FALSE}
 attr(day4, "srcref")
+```
+
+## day 5
+
+```{r, comment="", echo=FALSE}
+attr(day5, "srcref")
 ```
