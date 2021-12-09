@@ -285,40 +285,42 @@ the body of these functions.
 
     function() {
       # data
-      file <- system.file("extdata/day8ex.txt", package = "adventofcode2021")
-      input <- readLines(file)
+      file <- system.file("extdata/day9.txt", package = "adventofcode2021")
+      input_mat <- do.call(rbind,strsplit(readLines(file), ""))
+      # pad with 9s
+      input_mat <- cbind("9", rbind("9", input_mat, "9"), "9")
+      n_rows <- nrow(input_mat)
+      input_vec <- as.numeric(input_mat)
 
-      pattern <- "{x0} {x1} {x2} {x3} {x4} {x5} {x6} {x7} {x8} {x9} | {y0} {y1} {y2} {y3}"
-      input_df <- unglue::unglue_data(input, pattern)
+      # implement own base lag/lead padding with 9s
+      lag  <- function(x, n = 1) c(rep(9, n), head(x, -n))
+      lead <- function(x, n = 1) c(tail(x, -n), rep(9, n))
 
-      # part1
-      part1 <- sum(nchar(unlist(input_df[11:14])) %in% c(2,3,4,7))
+      ## part1
+      lows_lgl <-
+        input_vec < lag(input_vec) &
+        input_vec < lead(input_vec) &
+        input_vec < lag(input_vec, n_rows) &
+        input_vec < lead(input_vec, n_rows)
+      part1 <- sum(input_vec[lows_lgl] + 1)
 
-      # part2
-      library(tidyverse)
-      # establish number profiles
-      numbers <- tibble(
-        x0 = "abcefg", x1 = "cf", x2 = "acdeg", x3 = "acdfg", x4 = "bcdf",
-        x5 = "abdfg", x6 = "abdefg", x7 = "acf", x8 = "abcdefg", x9 = "abcdfg")
-
-      to_long <-
-        . %>%
-        mutate(line = 1:n()) %>%
-        pivot_longer(-line, names_to = "pos", values_to = "segment") %>%
-        separate_rows(segment, sep="") %>%
-        filter(segment != "") %>%
-        mutate(input = startsWith(pos, "x")) %>%
-        with_groups(c(line, segment), mutate, n_segment = sum(input)) %>%
-        with_groups(c(line, pos), summarise, key = list(sort(n_segment)))
-
-      numbers_long <- to_long(numbers) %>% transmute(key, num = 0:9)
-      input_long <-  to_long(input_df)
-
-      part2 <- left_join(input_long, numbers_long, by = "key") %>%
-        filter(startsWith(pos, "y")) %>%
-        with_groups(line, summarise, num = sum(num * c(1000, 100, 10, 1))) %>%
-        pull(num) %>%
-        sum()
+      ## part2
+      # every location next to a basin cell is from this basin, unless it's a 9
+      # first set low points to different negative values so we can keep track
+      input_vec[lows_lgl] <- -seq(sum(lows_lgl))
+      nines <- input_vec == 9
+      while(any(input_vec %in% 1:8)) {
+        input_vec <- pmin(
+          input_vec,
+          lag(input_vec),
+          lead(input_vec),
+          lag(input_vec, n_rows),
+          lead(input_vec, n_rows)
+        )
+        input_vec[nines] <- 9 # repair the walls
+      }
+      # visual check : matrix(input_vec, n_rows)
+      part2 <- prod(tail(sort(tabulate(-input_vec)),3))
 
       list(part1 = part1, part2 = part2)
     }
