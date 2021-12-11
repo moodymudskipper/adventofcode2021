@@ -3,9 +3,11 @@
 #' @export
 day10 <- function() {
   # data
-  file <- system.file("extdata/day10.txt", package = "adventofcode2021")
+  file <- system.file("extdata/day10ex.txt", package = "adventofcode2021")
   input <- strsplit(readLines(file), "")
 
+  ## part1
+  # fun fact: these numbers are cumprod(c(3,19,21,21)), is there a reason ?
   mapper <- list("(" = -3, ")" = 3, "[" = -57, "]" = 57, "{" = -1197, "}" = 1197, "<" = -25137, ">" = 25137)
   check_line <- function(l) {
     l <- mapper[l]
@@ -21,16 +23,14 @@ day10 <- function() {
         i <- i + 1
       }
     }
-    return(0)
+    0
   }
   scores <- sapply(input, check_line)
   part1 <- sum(scores)
 
-  # part2
-
+  ## part2
   input2 <- input[scores == 0]
   mapper2 <- list("(" = 1, ")" = -1, "[" = 2, "]" = -2, "{" = 3, "}" = -3, "<" = 4, ">" = -4)
-
   complete_line <- function(l) {
     l <- mapper2[l]
     n <- length(l)
@@ -44,11 +44,11 @@ day10 <- function() {
         i <- i + 1
       }
     }
-    return(Reduce(\(x, y) x * 5 + y, rev(l), 0))
+    # reversed number in base 5
+    sum(unlist(l) * 5^(seq_along(l)-1))
   }
   scores2 <- sapply(input2, complete_line)
   part2 <- median(scores2)
-
 
   list(part1 = part1, part2 = part2)
 }
