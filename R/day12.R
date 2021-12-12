@@ -11,10 +11,10 @@ day12 <- function() {
     subset(to != "start")
   edges <- with(input, split(to, from))
   nodes <- with(input, unique(c(from, to)))
-  visited    <- setNames(rep(FALSE, length(nodes)), nodes)
+  visited <- setNames(rep(FALSE, length(nodes)), nodes)
   visited[nodes == toupper(nodes)] <- NA
 
-  rec <- function(node, edges, visited, extra) {
+  rec <- function(node, visited = visited, extra) {
     if(isTRUE(visited[node])) {
       if (!extra) return(0)
       visited[node] <- FALSE
@@ -22,9 +22,8 @@ day12 <- function() {
     }
     if(node == "end") return(1)
     visited[node] <- !visited[node]
-    lapply(edges[[node]], rec, edges, visited, extra)
+    sum(sapply(edges[[node]], rec, visited, extra))
   }
-  solve <- function(extra) sum(unlist(rec("start", edges, visited, extra)))
   part1 <- solve(extra = FALSE)
   part2 <- solve(extra = TRUE)
 
