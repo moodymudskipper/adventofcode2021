@@ -420,33 +420,28 @@ the body of these functions.
     function() {
       # data
       file <- system.file("extdata/day12.txt", package = "adventofcode2021")
-      input_mat <- do.call(rbind, strsplit(readLines(file), ""))
-      # build walls of NAs so we don't have to bother with edge/corner cases <- lol
-      input_mat <- cbind(NA, rbind(NA, input_mat, NA), NA)
-      n_rows <- nrow(input_mat)
-      input_vec <- as.numeric(input_mat)
-      flashes <- i <- 0
-      repeat {
-        i <- i + 1
-        input_vec <- input_vec + 1
-        pos <- which(input_vec > 9)
-        while(new_flashes <- length(pos)) {
-          flashes <- flashes + new_flashes
-          input_vec[pos] <- -Inf # protect flashed cells
-          input_vec <- Reduce(
-            \(vec, j) { vec[pos + j] <- vec[pos + j] + 1 ; vec},
-            c((-n_rows-1):(-n_rows+1), -1, +1, (+n_rows-1):(+n_rows+1)),
-            input_vec)
-          pos <- which(input_vec > 9)
+      input <- unglue::unglue_data(readLines(file), "{from}-{to}")
+      # paths go both ways
+      input <-
+        rbind(input, setNames(input, c("to", "from"))) |>
+        subset(to != "start")
+      edges <- with(input, split(to, from))
+      nodes <- with(input, unique(c(from, to)))
+      visited0 <- setNames(rep(FALSE, length(nodes)), nodes)
+      visited0[nodes == toupper(nodes)] <- NA
+
+      rec <- function(node = "start", visited = visited0, extra) {
+        if(isTRUE(visited[node])) {
+          if (!extra) return(0)
+          visited[node] <- FALSE
+          extra <- FALSE
         }
-        input_vec[input_vec == -Inf] <- 0
-        if (i == 100) {
-          part1 <- flashes
-        }
-        if(sum(input_vec, na.rm = TRUE) == 0) {
-          part2 <- i
-          break
-        }
+        if(node == "end") return(1)
+        visited[node] <- !visited[node]
+        sum(sapply(edges[[node]], rec, visited, extra))
       }
+      part1 <- rec(extra = FALSE)
+      part2 <- rec(extra = TRUE)
+
       list(part1 = part1, part2 = part2)
     }
