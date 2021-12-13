@@ -99,3 +99,10 @@ attr(day11, "srcref")
 ```{r, comment="", echo=FALSE}
 attr(day12, "srcref")
 ```
+
+## day13
+
+```{r, comment="", echo=FALSE}
+attr(day13, "srcref")
+```
+
