@@ -115,5 +115,11 @@ attr(day14, "srcref")
 ## day15
 
 ```{r, comment="", echo=FALSE}
-attr(day14, "srcref")
+attr(day15, "srcref")
+```
+
+## day16
+
+```{r, comment="", echo=FALSE}
+attr(day16, "srcref")
 ```

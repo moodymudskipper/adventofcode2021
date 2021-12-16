@@ -4,7 +4,7 @@
 day15 <- function() {
   # data
   library(tidyverse)
-  file <- system.file("extdata/day15ex.txt", package = "adventofcode2021")
+  file <- system.file("extdata/day15.txt", package = "adventofcode2021")
   input_mat <- do.call(rbind, lapply(strsplit(readLines(file), ""), as.numeric))
 
   solve <- function(input_mat) {
