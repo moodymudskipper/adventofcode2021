@@ -54,7 +54,5 @@ day18 <- function() {
     max(sapply(parse(text=reduced_call), eval))
   })
 
-  nums <- do.call(add_pair, grid)
-
   list(part1 = part1, part2 = NULL)
 }
