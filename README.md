@@ -705,64 +705,55 @@ the body of these functions.
     function() {
       # data
       library(tidyverse)
-      file <- system.file("extdata/day17.txt", package = "adventofcode2021")
-      input <- unglue::unglue_data(
-        readLines(file),
-        "target area: x={x_min}..{x_max}, y={y_min}..{y_max}",
-        convert = TRUE)
+      file <- system.file("extdata/day18.txt", package = "adventofcode2021")
+
+      add_pair <- function(x, y) {
+        snail_num <- paste0("[", x, ",", y, "]")
+        chars <- strsplit(snail_num, "")[[1]] # only 1 digit nums at this stage
+        repeat {
+          first_5th_bracket <- which(cumsum(chars == "[") - cumsum(chars == "]")== 5)[1]
+          all_num_pos <- grep("\\d", chars)
+          if(!is.na(first_5th_bracket)) {
+            # explode
+            before_bracket <- which(grep("\\d", chars) > first_5th_bracket)[1] - 1
+            num_pos <- all_num_pos[before_bracket + (0:3)]
+            if(before_bracket == 0) num_pos <- c(NA, num_pos)
+            if(!is.na(num_pos[1]))
+              chars[num_pos[1]] <- as.numeric(chars[num_pos[1]]) + as.numeric(chars[num_pos[2]])
+            if(!is.na(num_pos[4]))
+              chars[num_pos[4]] <- as.numeric(chars[num_pos[4]]) + as.numeric(chars[num_pos[3]])
+            chars <- c(chars[1:(first_5th_bracket-1)], "0", chars[(first_5th_bracket+5):length(chars)])
+            next
+          }
+          all_nums <- as.numeric(chars[all_num_pos])
+          first_big_num <- all_num_pos[all_nums >= 10][1]
+          if(!is.na(first_big_num)) {
+            #split
+            num <- all_nums[all_nums >= 10][1]
+            chars <- c(chars[1:(first_big_num-1)], "[", floor(num/2), "," , ceiling(num/2), "]", chars[(first_big_num+1):length(chars)])
+            next
+          }
+          break
+        }
+        paste(chars, collapse = "")
+      }
 
       # part1
-      # we want to in one step as deep as allowed
-      # it also takes vy steps to go to the top, since we take back one unit per step
-      # and 1+..+n is n*(n-1)/2
-      n <- vy_max <- -input$y_min - 1
-      part1 <- n * vy_max - n*(n-1)/2
+      input <- readLines(file)
+      reduced <- Reduce(add_pair, input)
+      reduced_call <- gsub("\\[", "magn(", reduced)
+      reduced_call <- gsub("\\]", ")", reduced_call)
+      magn <- function(x, y) 3 * x + 2 * y
+      part1 <- eval(str2lang(reduced_call))
 
-      # part2 tidy
+      # part 2
+      grid <- merge(input, input, by = NULL) |> subset(x != y)
+      part2 <- with(grid, {
+        reduced <- mapply(add_pair, x, y)
+        reduced_call <- gsub("\\[", "magn(", reduced)
+        reduced_call <- gsub("\\]", ")", reduced_call)
+        max(sapply(parse(text=reduced_call), eval))
+      })
 
-      library(tidyverse)
-      max_steps <- 2*vy_max+2
-
-      # all combinations that would work vertically
-      y2 <-
-        crossing(n = 1:max_steps, vy = input$y_min:vy_max) %>%
-        mutate(y = n * vy - n^2/2 + n/2) %>%
-        filter(y >= input$y_min & y <= input$y_max)
-
-      # all combinations that would work horizontally
-      x2 <-
-        crossing(n = 1:max_steps, vx = 1:input$x_max) %>%
-        with_groups("vx", mutate, x = cummax(n * vx - n^2/2 + n/2)) %>%
-        filter(x >= input$x_min & x <= input$x_max)
-
-      # combine and count
-      part2 <-
-        inner_join(x2, y2, by = "n") %>%
-        distinct(vx, vy) %>%
-        nrow()
-
-      #---------------------------------------------------------------------------
-      # part2 base
-      max_steps <- 2*vy_max+2
-      n_seq <- 1: max_steps
-
-      # all combinations that would york vertically
-      y <- do.call(rbind, lapply(input$y_min:vy_max, function(vy) {
-        data.frame(vy, n = n_seq, y = n_seq * vy - n_seq^2/2 + n_seq/2) |>
-          subset(y >= input$y_min & y <= input$y_max)
-      }))
-
-      # all combinations that would work horizontally
-      x <- do.call(rbind, lapply(1:input$x_max, function(vx) {
-        data.frame(vx, n = n_seq, x = cummax(n_seq * vx - n_seq^2/2 + n_seq/2)) |>
-          subset(x >= input$x_min & x <= input$x_max)
-      }))
-
-      # combine and count
-      part2 <-
-        merge(x, y, by = "n")[c("vx", "vy")] |>
-        unique() |>
-        nrow()
-
-      list(part1 = part1, part2 = NULL) # 246225449979
+      list(part1 = part1, part2 = NULL)
     }
